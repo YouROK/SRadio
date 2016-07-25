@@ -89,7 +89,7 @@ func btnPlayClick() {
 
 func btnAboutClick() {
 	about, _ := gtk.AboutDialogNew()
-	about.SetVersion("1.0.0")
+	about.SetVersion(config.Version)
 	about.SetProgramName("SRadio")
 	about.SetComments("SRadio - Simple Radio\nprogram for listen online radio\nAuthor: YouROK")
 	about.SetWebsite("https://github.com/YouROK")
