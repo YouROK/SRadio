@@ -12,9 +12,9 @@ import (
 var (
 	mainWnd     *gtk.Window
 	radioEdit   []*gtk.Entry
-	updwBtn     []*gtk.Button
-	mainBtn     []*gtk.Button
-	bottomBtn   []*gtk.Button
+	updwBtn     []*Button
+	mainBtn     []*Button
+	bottomBtn   []*Button
 	radioList   *ListBox
 	statusLabel *gtk.Label
 	trayAnim    *TrayAnimation
@@ -23,10 +23,18 @@ var (
 	rad *radio.Radio
 )
 
+//TODO normal gui interface
+
 func Init(r *radio.Radio) {
-	var err error
 	rad = r
 	gtk.Init(nil)
+	InitApp()
+	RunApp(initWnd)
+	trayAnim.Close()
+}
+
+func initWnd() {
+	var err error
 	mainWnd, err = gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	if err != nil {
 		log.Println("Error create window", err)
@@ -66,8 +74,9 @@ func Init(r *radio.Radio) {
 
 	go eventsHandler()
 
+	app.Hold()
 	gtk.Main()
-	trayAnim.Close()
+	app.Release()
 }
 
 /*
@@ -97,17 +106,17 @@ func buildMainWnd() gtk.IWidget {
 
 			hboxud := NewHBox(1)
 			hboxud.SetVExpand(false)
-			updwBtn := make([]*gtk.Button, 2)
-			updwBtn[0], _ = gtk.ButtonNewWithLabel("Up")
-			updwBtn[0].SetSizeRequest(-1, 25)
-			updwBtn[1], _ = gtk.ButtonNewWithLabel("Down")
-			updwBtn[1].SetSizeRequest(-1, 25)
+			updwBtn := make([]*Button, 2)
+			updwBtn[0] = NewButton("Up")
+			updwBtn[0].SetSize(-1, 25)
+			updwBtn[1] = NewButton("Down")
+			updwBtn[1].SetSize(-1, 25)
 
-			updwBtn[0].Connect("clicked", btnUp)
-			updwBtn[1].Connect("clicked", btnDown)
+			updwBtn[0].OnClick(btnUp)
+			updwBtn[1].OnClick(btnDown)
 
-			hboxud.PackStart(updwBtn[0], true, true, 1)
-			hboxud.PackEnd(updwBtn[1], true, true, 1)
+			hboxud.PackStart(updwBtn[0].GetWidget(), true, true, 1)
+			hboxud.PackEnd(updwBtn[1].GetWidget(), true, true, 1)
 
 			scroll, _ := gtk.ScrolledWindowNew(nil, nil)
 			scroll.SetPolicy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -121,44 +130,44 @@ func buildMainWnd() gtk.IWidget {
 			radioEdit = make([]*gtk.Entry, 2)
 			radioEdit[0], _ = gtk.EntryNew()
 			radioEdit[1], _ = gtk.EntryNew()
-			mainBtn = make([]*gtk.Button, 4)
-			mainBtn[0], _ = gtk.ButtonNewWithLabel("Add")
-			mainBtn[1], _ = gtk.ButtonNewWithLabel("Edit")
-			mainBtn[2], _ = gtk.ButtonNewWithLabel("Remove")
-			mainBtn[3], _ = gtk.ButtonNewWithLabel("Separator")
+			mainBtn = make([]*Button, 4)
+			mainBtn[0] = NewButton("Add")
+			mainBtn[1] = NewButton("Edit")
+			mainBtn[2] = NewButton("Remove")
+			mainBtn[3] = NewButton("Separator")
 			vbox := NewVBox(2)
 			for i := 0; i < len(radioEdit); i++ {
 				vbox.PackStart(radioEdit[i], false, false, 1)
 			}
 			for i := 0; i < len(mainBtn); i++ {
-				vbox.PackStart(mainBtn[i], true, true, 1)
+				vbox.PackStart(mainBtn[i].GetWidget(), true, true, 1)
 			}
 			hbox.Add(vbox)
 
-			mainBtn[0].Connect("clicked", btnAdd)
-			mainBtn[1].Connect("clicked", btnEdit)
-			mainBtn[2].Connect("clicked", btnRemove)
-			mainBtn[3].Connect("clicked", btnSeparator)
+			mainBtn[0].OnClick(btnAdd)
+			mainBtn[1].OnClick(btnEdit)
+			mainBtn[2].OnClick(btnRemove)
+			mainBtn[3].OnClick(btnSeparator)
 
 		}
 		mainVBox.PackStart(hbox, true, true, 1)
 	}
 	{ //bottom buttons
 		hbox := NewHBox(1)
-		bottomBtn = make([]*gtk.Button, 3)
-		bottomBtn[0], _ = gtk.ButtonNewWithLabel("Play")
-		bottomBtn[1], _ = gtk.ButtonNewWithLabel("About")
-		bottomBtn[2], _ = gtk.ButtonNewWithLabel("Exit")
+		bottomBtn = make([]*Button, 3)
+		bottomBtn[0] = NewButton("Play")
+		bottomBtn[1] = NewButton("About")
+		bottomBtn[2] = NewButton("Exit")
 		hbox.SetHomogeneous(true)
 		for i := 0; i < len(bottomBtn); i++ {
-			hbox.Add(bottomBtn[i])
-			bottomBtn[i].SetSizeRequest(-1, 50)
+			hbox.Add(bottomBtn[i].GetWidget())
+			bottomBtn[i].SetSize(-1, 50)
 		}
 		mainVBox.PackStart(hbox, false, true, 15)
 
-		bottomBtn[0].Connect("clicked", btnPlayClick)
-		bottomBtn[1].Connect("clicked", btnAboutClick)
-		bottomBtn[2].Connect("clicked", btnExitClick)
+		bottomBtn[0].OnClick(btnPlayClick)
+		bottomBtn[1].OnClick(btnAboutClick)
+		bottomBtn[2].OnClick(btnExitClick)
 	}
 	{ //status label
 		statusLabel, _ = gtk.LabelNew("")

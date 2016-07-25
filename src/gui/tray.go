@@ -65,6 +65,7 @@ type TrayAnimation struct {
 	animIndex int
 	frame     int
 	trayicon  *TrayIcon
+	isAnimate bool
 }
 
 func NewTrayAnimation(ti *TrayIcon) *TrayAnimation {
@@ -80,6 +81,9 @@ func (ta *TrayAnimation) Close() {
 }
 
 func (ta *TrayAnimation) SetAnimation(index int) {
+	if ta.animIndex != index {
+		ta.stopAnimation()
+	}
 	ta.animIndex = index
 }
 
@@ -89,6 +93,7 @@ func (ta *TrayAnimation) GetTrayIcon() *TrayIcon {
 
 func (ta *TrayAnimation) animation() {
 	for ta.animIndex != TA_CLOSE {
+		ta.isAnimate = true
 		switch ta.animIndex {
 		case TA_PLAYING:
 			ta.animPlaying()
@@ -106,13 +111,13 @@ func (ta *TrayAnimation) animPlaying() {
 	if ta.frame == 3 {
 		ta.frame = 0
 		for i := 0; i < 30; i++ {
-			time.Sleep(time.Second)
+			ta.sleep(30000)
 			if ta.animIndex != TA_PLAYING {
 				break
 			}
 		}
 	}
-	time.Sleep(time.Second)
+	ta.sleep(1000)
 }
 
 func (ta *TrayAnimation) animStoped() {
@@ -121,7 +126,7 @@ func (ta *TrayAnimation) animStoped() {
 	if ta.frame == 2 {
 		ta.frame = 0
 	}
-	time.Sleep(time.Second)
+	ta.sleep(1000)
 }
 
 func (ta *TrayAnimation) animLoading() {
@@ -129,7 +134,19 @@ func (ta *TrayAnimation) animLoading() {
 	ta.frame++
 	if ta.frame == 3 {
 		ta.frame = 0
-		time.Sleep(time.Second)
 	}
-	time.Sleep(300 * time.Millisecond)
+	ta.sleep(300)
+}
+
+func (t *TrayAnimation) sleep(millisecond int) {
+	for i := 0; i < millisecond/100; i++ {
+		time.Sleep(100 * time.Millisecond)
+		if !t.isAnimate {
+			break
+		}
+	}
+}
+
+func (t *TrayAnimation) stopAnimation() {
+	t.isAnimate = false
 }

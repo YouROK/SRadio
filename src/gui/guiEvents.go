@@ -30,6 +30,7 @@ func eventsHandler() {
 					mainWnd.SetTitle("SRadio - " + radioEvent.Val)
 					statusLabel.SetLabel("Song: " + radioEvent.Val)
 					trayIcon.SetTitle(radioEvent.Val)
+					Notify(radioEvent.Val)
 				}
 			}
 		case radio.RE_STOP:
