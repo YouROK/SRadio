@@ -10,7 +10,6 @@ var (
 
 func InitApp() {
 	app = glib.ApplicationNew("ru.YouROK.SRadio", glib.APPLICATION_FLAGS_NONE)
-
 }
 
 func RunApp(f func()) {
