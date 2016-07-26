@@ -30,7 +30,6 @@ func Init(r *radio.Radio) {
 	gtk.Init(nil)
 	InitApp()
 	RunApp(initWnd)
-	trayAnim.Close()
 }
 
 func initWnd() {
@@ -44,7 +43,7 @@ func initWnd() {
 	mainWnd.SetPosition(gtk.WIN_POS_CENTER)
 	mainWnd.SetTitle("SRadio")
 
-	trayIcon = NewTrayIcon()
+	trayIcon = NewTrayIcon(filepath.Join(filepath.Dir(os.Args[0]), "radiotray3.png"))
 	if trayIcon != nil {
 		icons := []string{filepath.Join(filepath.Dir(os.Args[0]), "radiotray1.png"),
 			filepath.Join(filepath.Dir(os.Args[0]), "radiotray2.png"),
@@ -76,6 +75,7 @@ func initWnd() {
 
 	app.Hold()
 	gtk.Main()
+	trayAnim.Close()
 	app.Release()
 }
 
