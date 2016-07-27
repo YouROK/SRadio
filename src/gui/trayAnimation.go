@@ -76,12 +76,21 @@ func (ta *TrayAnimation) animPlaying() {
 
 func (ta *TrayAnimation) animStoped() {
 	ta.trayicon.SetIcon(ta.frame)
+
 	if ta.isReverse {
 		ta.frame--
 	} else {
 		ta.frame++
 	}
-	if ta.frame < 1 || ta.frame >= 1 {
+
+	if ta.frame < 0 {
+		ta.frame = 0
+	}
+	if ta.frame > 1 {
+		ta.frame = 1
+	}
+
+	if ta.frame == 0 || ta.frame == 1 {
 		ta.isReverse = !ta.isReverse
 	}
 	ta.sleep(1000)
