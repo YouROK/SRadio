@@ -13,7 +13,7 @@ var (
 )
 
 const (
-	Version = "1.0.2"
+	Version = "1.0.3"
 )
 
 type Config struct {
@@ -32,8 +32,8 @@ type RadioCfg struct {
 func Init() {
 
 	conf.Volume = 100
-	conf.Cache = 4096
-	conf.CacheSeek = 16
+	conf.Cache = 1024 * 1024
+	conf.CacheSeek = 25
 	conf.Radios = make([]RadioCfg, 0)
 	conf.SelectedRadio = 0
 
