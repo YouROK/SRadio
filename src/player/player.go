@@ -4,6 +4,7 @@ package player
 import "C"
 
 import (
+	"config"
 	"log"
 	"time"
 	"unsafe"
@@ -25,8 +26,8 @@ type Player struct {
 
 func NewPlayer() *Player {
 	p := &Player{}
-	p.cache = 4096
-	p.cacheSeek = 24
+	p.cache = config.GetCache()
+	p.cacheSeek = config.GetCacheSeek()
 	p.volume = 100
 	return p
 }
@@ -38,7 +39,7 @@ func (p *Player) Init() error {
 		m := mpv.Create()
 		m.SetOption("no-resume-playback", mpv.FORMAT_FLAG, true)
 		m.SetOption("volume", mpv.FORMAT_INT64, p.volume)
-		m.SetOptionString("terminal", "no")
+		m.SetOptionString("terminal", "yes")
 		m.SetOptionString("softvol", "auto")
 		m.SetOption("no-video", mpv.FORMAT_FLAG, true)
 		m.SetOption("cache", mpv.FORMAT_INT64, p.cache)
