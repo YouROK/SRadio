@@ -210,6 +210,7 @@ func updTrayMenu() {
 	trayIcon.AddMenuItem(btnPlStName+" "+defRadio.Name, func(interface{}) { btnPlayClick() }, nil)
 	trayIcon.AddMenuItem("Show settings", func(interface{}) {
 		mainWnd.ShowAll()
+		//TODO иногда не показывает контент
 	}, nil)
 	trayIcon.AddMenuItem("", nil, nil)
 
